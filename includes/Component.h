@@ -64,12 +64,10 @@ namespace UIF{
 			//Clone usable in next frame... 
 			template<typename T>
 				static T* Clone(UIF::Component* component){
-					T* clone = new T(component); 	
-					UIF::Data::global_bus->Add_ComponentLine(clone);
-
-					//Construct new Component for every child.
+					T* clone = new T(component); 		
+					//Constructs a deep copy of every copied child resource pointer.
 					for(int idx{}; idx < clone->children.size(); idx++){
-						clone->children[idx] = Clone<T>(clone->children[idx]);		
+						clone->children[idx] = Clone<T>(clone->children[idx]);
 					}
 					return clone;
 				}
