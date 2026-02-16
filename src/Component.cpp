@@ -103,7 +103,7 @@ void UIF::Component::Render(UIF::Window* window){
 	}
 }
 
-//Depth First Search. If Component hit, check children... And so forth for all hit components until nullptr returned (no children), then return the child with no children.
+//Depth First Search. If Component hit, check children... And so forth for all hit components until a hit child is found with no children, then return the child with no children.
 UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
 	auto hit_test = [](UIF::Component* component){
  		float m_x{};
