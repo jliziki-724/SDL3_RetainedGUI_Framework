@@ -16,7 +16,6 @@ UIF::Component::Component(const std::string& filepath, UIF::Window* window, floa
 	this->win_ratio = (this->cfrect.dst_frect->w * this->cfrect.dst_frect->h) / 
 		(static_cast<float>(window->Get_Dimensions().w) * static_cast<float>(window->Get_Dimensions().h)); // <- Capture the initial relative area for use as a Max/Min scaling constraint..
 	
-
 	//If component is larger than the window. Fit to Window (or workspace in future), recalculate the ratio which should now be 1:1.
 	if(this->win_ratio > 1){
 		Mod_Dst(window, this->cfrect.dst_frect->x, this->cfrect.dst_frect->y, 
@@ -47,7 +46,7 @@ UIF::Component::Component(UIF::Component* component){
 	UIF::Data::global_bus->Add_ComponentLine(this);
 }
 
-//TAKE ANOTHER LOOK AT THIS...
+//TAKE ANOTHER LOOK AT THIS
 void UIF::Component::Delete(UIF::Component* component){
 	if(component->children.empty()){
 		delete component->cfrect.dst_frect;
@@ -103,7 +102,7 @@ void UIF::Component::Render(UIF::Window* window){
 	}
 }
 
-//Depth First Search. If Component hit, check children... And so forth for all hit components until a hit child is found with no children, then return the child with no children.
+//Depth First Search. If Component hit, check children... And so forth for all hit components... then return the hit child with no children.
 UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
 	auto hit_test = [](UIF::Component* component){
  		float m_x{};
@@ -135,7 +134,6 @@ UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
 	return this;
 }
 
-//Consider FRect sources?
 void UIF::Component::Mod_Src(float x, float y, float w, float h){
 	if(x < 0 || x > tex_cache->Get_Texture(this)->w ||
 	   y < 0 || y > tex_cache->Get_Texture(this)->h ||
@@ -233,7 +231,7 @@ bool UIF::Component::State_Valid(){
 	if(!tex_cache->Get_Texture(this)){
 		return false;
 	}
-	else if(!tex_cache->Get_Texture(this)->w || !tex_cache->Get_Texture(this)->h){ //Guard for 0x1/0x0 Textures... Will cause crashes on division from aspect ratio/win_ratio.
+	else if(tex_cache->Get_Texture(this)->w < 1.0f|| tex_cache->Get_Texture(this)->h < 1.0f){ //Guard for 0x1/0x0 Textures... Will cause crashes on division from aspect ratio/win_ratio.
 		return false;
 	}
 
