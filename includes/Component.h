@@ -61,7 +61,7 @@ namespace UIF{
 					return component;
 				}
 
-			//Clone usable in next frame... 
+			//TO FIX/FINISH!!!
 			template<typename T>
 				static T* Clone(UIF::Component* component){
 					T* clone = new T(component); 	
