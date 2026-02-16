@@ -74,6 +74,8 @@ namespace UIF{
 					for(int idx{}; idx < clone->children.size(); idx++){
 						clone->children[idx] = Clone<T>(clone->children[idx]);		
 					}
+
+					component = clone;
 				}
 
 			//Would be static if didn't require 'this', slightly awkward call site.
