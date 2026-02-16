@@ -16,9 +16,8 @@ UIF::Component::Component(const std::string& filepath, UIF::Window* window, floa
 	this->win_ratio = (this->cfrect.dst_frect->w * this->cfrect.dst_frect->h) / 
 		(static_cast<float>(window->Get_Dimensions().w) * static_cast<float>(window->Get_Dimensions().h)); // <- Capture the initial relative area for use as a Max/Min scaling constraint..
 	
-	
-	//Consider a 50% reduction rather than fit.
-	//If component is larger than the window. Fit to Window, recalculate the ratio which should now be 1:1.
+
+	//If component is larger than the window. Fit to Window (or workspace in future), recalculate the ratio which should now be 1:1.
 	if(this->win_ratio > 1){
 		Mod_Dst(window, this->cfrect.dst_frect->x, this->cfrect.dst_frect->y, 
 			static_cast<float>(window->Get_Dimensions().w),
