@@ -5,12 +5,6 @@
 #include "Helper.h"
 #include "NotificationBus.h" 
 
-/* The HelperManager serves to centralize all instances of Helpers
- * and distrbute the function of single instances across multiple Components.
- * Helper instances can only exist in the manager as multiple instances are undesired.
- * Orchestrates actions between Component -> Behaviour
- * */
-
 /* HELPERS:
  * LoadHelper-> "load" <- Opens a file explorer, retrieves file contents.
  * DefaultHelper -> "default" <- No behaviour.
@@ -30,11 +24,9 @@ namespace UIF{
 		INVOKER_COUNT
 	};
 
-	//Clean Up considerations for removed components... ID stability issues. 
 	class HelperManager{
 		private: 
-			//Personal lookup tables for each component.  
-			//Component -> Map[Invoker]->Vector(Helper) <- Accomodating multiple behaviours per invoker. I.e. Resize, Constraint, Scaling, etc.	
+		
 			std::vector<std::unordered_map<UIF::Invoker, std::vector<UIF::Helper*>>> helper_vec;
 			//Helper Lookup/List of Helpers 
 			std::unordered_map<std::string, Helper*>lookup_helpers;

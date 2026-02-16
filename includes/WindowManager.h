@@ -20,15 +20,12 @@ namespace UIF{
 
 		bool quit{};
 
-		//Event dispatcher
 		SDL_Event event;
- 
-		//Main loop: Perform instruction on active window -> Update active window -> Render active window
+
 		void Dispatch();
 		void Update();
 		void Render();
 
-		//Internal mechanisms...
 		void Delete_Window();
 		void Interact_Window(UIF::Invoker invoker);
 		void Component_Event(UIF::Component* component, UIF::Invoker invoker);

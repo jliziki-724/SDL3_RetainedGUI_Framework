@@ -7,12 +7,11 @@
 
 namespace UIF{
          
-	//Couple width and height together.
 	struct Dimensions{
 		int w{};
 		int h{};
 	};
-	/* Packages an SDL_Window, and SDL_Renderer*/
+
 	class Window{
 	 private:
 		SDL_Window* window{ nullptr };

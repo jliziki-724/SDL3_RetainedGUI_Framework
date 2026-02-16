@@ -15,7 +15,7 @@
 namespace UIF{
 	//Editing Interface
 	class Workspace;
-	class Mouse; // <- Customisable mouse which follows the system cursor.
+	class Mouse;
 
 	//Textures
 	class TextureCache;
@@ -51,10 +51,10 @@ namespace UIF{
 	class LoadHelper;
 	class DefaultHelper;
 	class PlayBackHelper;
-	class ToolTipHelper; // <- Display a component's associated tooltip
+	class ToolTipHelper; 
 	class DragHelper;
 
-	//Cursor Helpers <- Graphical Views of a Behaviour, not modifications of the cursor behaviour itself.
+	//Cursor Helpers 
 	class CaretCursorHelper;
 	class SelectCursorHelper; 
 	class MoveCursorHelper; 
@@ -68,7 +68,7 @@ namespace UIF{
 	class ScaleUniformHelper;
 	class ScaleFitHelper;
 
-	//Utility Functions - Erasure/Deletion of Vectors/Deques/Map elements/Draining to Targets
+	//Utility Functions - Erasure/Deletion of Vectors/Deques/Draining to Targets
 	//Could make use of reflections <- i.e. shrink_to_fit/size, etc
 
 	template<typename T, typename U>

@@ -91,7 +91,7 @@ namespace UIF{
 			void Mod_Color(SDL_Color& RGBA, int16_t r, int16_t g, int16_t b);
 			void Mod_Opacity(SDL_Color& RGBA, int16_t a);
 
-			//Frequently accessed attributes.
+			//Frequently accessed attributes. Return by Copy instead...
 			const float& Get_Aspect();
 			const float& Get_WinRatio();
 			const ColoredFRect& Get_CFRect();
@@ -185,7 +185,6 @@ namespace UIF{
 				}
 		};
 
-		//Consider making tabbar/sidebar/dropmenu specializations of a Bar type base class..
 		class SideBar : public Component{
 			private:
 				using Component::Component;
@@ -195,7 +194,6 @@ namespace UIF{
 		
 		};
 
-		//TO-DO, use a single x co-ordinate. Iterate through the vector, multiplying width per element.
 		class TabBar : public Component{
 			private:
 				using Component::Component;
@@ -224,8 +222,7 @@ namespace UIF{
 
 				void Add_Tab(){
 				}
-
-				//Adjust tab spacing as needed, etc...
+	
 				virtual void Update(UIF::Window* window) override{
 				}	
 

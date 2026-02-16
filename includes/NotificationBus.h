@@ -4,14 +4,6 @@
 #include "UIFCore.h"
 #include "GlobalBus.h"
 
-
-/*The NotificationBus serves specifically to notify other objects of the existence of other objects
- * and perform operations AROUND the object rather than directly on its attributes. i.e. allocate helpers 
- * to new Components -> Supplying other objects with things in their domain.
- *
- * The Type is embedded into other types. Ideally managers.
- * */
-
 namespace UIF{
 
 	namespace Data{ 

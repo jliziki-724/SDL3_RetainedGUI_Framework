@@ -27,7 +27,6 @@ namespace UIF{
 
 	class GlobalBus{
 		private:
-			//Considering reserving storage based on the number of existing Components.
 			std::vector<UIF::Component*> component_line;
 			std::vector<HelperPkg> helper_line;
 

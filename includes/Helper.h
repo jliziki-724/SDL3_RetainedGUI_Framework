@@ -6,11 +6,6 @@
 
 namespace UIF
 {
-	/*Auxiliary Interface for Components, facilitating variance in Component behaviours.
- 	 i.e. Button clicks, etc. The Helper will - on invocation by a component - act on the target window/component
- 	 specified. All Helpers are registered into the HelperManager.
- 	 */
- 
 	class Helper{
 		protected:
 		 	Helper(const std::string& helper, std::unordered_map<std::string, Helper*>& helpers){ 
