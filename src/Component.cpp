@@ -55,7 +55,6 @@ UIF::Component::~Component(){
 	delete this->cfrect.dst_frect;
 }
 
-//Most Cryptic Code? 
 void UIF::Component::Render(UIF::Window* window){
 	SDL_Renderer* const cache_render { window->Get_Renderer() }; //Repeated calls to get the renderer per cycle are unideal.	
 	//Don't set the draw color if it hasn't changed.
