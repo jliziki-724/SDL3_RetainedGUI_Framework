@@ -10,7 +10,7 @@ namespace UIF{
 			std::unordered_map<std::string, uint32_t> redirect_lookup; /*Check if the image data has already been loaded based on filepath.*/
 	
 		std::vector<SDL_Texture*> textures { nullptr }; //Insert one elemnt to reserve index 0 as sentinel i.e. 0 = 'No Texture',
-									       //1 = 'Texture Creation Failure' <- Component is intended to be asset based.
+									       
 
 
 		public:	
