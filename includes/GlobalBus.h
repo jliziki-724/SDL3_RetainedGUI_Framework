@@ -22,7 +22,7 @@ namespace UIF{
 		        UIF::Component* component{ nullptr };
 			UIF::Invoker invoker{};
 			UIF::Data::HelperOp helper_op{};
-			std::string helper{};
+			UIF::HelperType helper_type{};
 		};
 
 	class GlobalBus{
@@ -42,7 +42,7 @@ namespace UIF{
 			//	}
 				
 			void Add_ComponentLine(UIF::Component* component);
-			void Add_HelperLine(UIF::Component* component, UIF::Invoker invoker, const std::string& helper, UIF::Data::HelperOp helper_op);
+			void Add_HelperLine(UIF::Component* component, UIF::Invoker invoker, UIF::HelperType helper_type, UIF::Data::HelperOp helper_op);
 
 			void Pull_ComponentLine(std::vector<UIF::Component*>& target);
 			void Pull_HelperLine(std::vector<HelperPkg>& target);

@@ -9,8 +9,8 @@ void UIF::Data::GlobalBus::Add_ComponentLine(UIF::Component* component){
 	component_line.emplace_back(component);
 }
 
-void UIF::Data::GlobalBus::Add_HelperLine(UIF::Component* component, UIF::Invoker invoker, const std::string& helper, UIF::Data::HelperOp helper_op){
-	HelperPkg helper_pkg{ component, invoker, helper_op, helper };
+void UIF::Data::GlobalBus::Add_HelperLine(UIF::Component* component, UIF::Invoker invoker, UIF::HelperType helper_type, UIF::Data::HelperOp helper_op){
+	HelperPkg helper_pkg{ component, invoker, helper_op, helper_type };
 	helper_line.emplace_back(helper_pkg);
 }
 

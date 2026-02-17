@@ -22,7 +22,7 @@ namespace UIF{
 		DOUBLE_CLICK,
 		RESIZE,
 		INVOKER_COUNT
-	};
+	};  
 
 	struct ArrOfVec{
 		std::array<std::vector<UIF::Helper*>, static_cast<long unsigned int>(UIF::Invoker::INVOKER_COUNT)> arr_vec;
@@ -30,39 +30,39 @@ namespace UIF{
 
 	class HelperManager{
 		private: 
-			std::vector<ArrOfVec> helper_vec;
+			std::vector<ArrOfVec> component_helper_vec;
 	
-			//Helper Lookup/List of Helpers 
-			std::unordered_map<std::string_view, Helper*>lookup_helpers;
-
+			//Helper Lookup/List of Helpers
+			std::array<UIF::Helper*, static_cast<long unsigned int>(UIF::HelperType::HELPER_COUNT)> helper_arr;
+			
 			//File I/O Helper
-			UIF::LoadHelper load_helper { "load", lookup_helpers };
+			UIF::LoadHelper load_helper { UIF::HelperType::LOAD, helper_arr };
 
 			//Playback
-			UIF::PlayBackHelper playback_helper { "playback_helper", lookup_helpers };
+			UIF::PlayBackHelper playback_helper { UIF::HelperType::PLAYBACK, helper_arr };
 
 			//No-Op Helper
-			UIF::DefaultHelper default_helper { "default", lookup_helpers };
+			UIF::DefaultHelper default_helper { UIF::HelperType::DEFAULT, helper_arr };
 
 			//Text Input Helpers
-			UIF::DefaultHelper TextInputHelper { "text_input", lookup_helpers };
+			UIF::DefaultHelper TextInputHelper { UIF::HelperType::TEXT_INPUT, helper_arr };
 
-			//Tooltip Helpers
-			UIF::ToolTipHelper tooltip_helper { "tooltip", lookup_helpers };
+			//Tooltip HelpersU
+			UIF::ToolTipHelper tooltip_helper { UIF::HelperType::TOOLTIP, helper_arr };
 
 			//Move
-			UIF::DragHelper drag_helper { "drag", lookup_helpers };
+			UIF::DragHelper drag_helper { UIF::HelperType::DRAG, helper_arr };
 
 			//Cursor Helpers
-			UIF::CaretCursorHelper caretcursor_helper { "caret_cursor", lookup_helpers };
-			UIF::MoveCursorHelper movecursor_helper { "move_cursor", lookup_helpers };
-			UIF::SelectCursorHelper selectcursor_helper { "select_cursor", lookup_helpers };
+			UIF::CaretCursorHelper caretcursor_helper { UIF::HelperType::CARET_CURSOR, helper_arr };
+			UIF::MoveCursorHelper movecursor_helper { UIF::HelperType::MOVE_CURSOR, helper_arr };
+			UIF::SelectCursorHelper selectcursor_helper { UIF::HelperType::SELECT_CURSOR, helper_arr };
 
 			//Scaling Helpers
-			UIF::ScaleByWidthHelper scalebywidth_helper { "scale_width", lookup_helpers };
-			UIF::ScaleByHeightHelper scalebyheight_helper { "scale_height", lookup_helpers };
-			UIF::ScaleUniformHelper scaleuniform_helper { "scale_uniform", lookup_helpers };
-			UIF::ScaleFitHelper scalefit_helper { "scale_fit", lookup_helpers };
+			UIF::ScaleByWidthHelper scalebywidth_helper { UIF::HelperType::SCALE_WIDTH, helper_arr };
+			UIF::ScaleByHeightHelper scalebyheight_helper { UIF::HelperType::SCALE_HEIGHT, helper_arr };
+			UIF::ScaleUniformHelper scaleuniform_helper { UIF::HelperType::SCALE_UNIFORM, helper_arr };
+			UIF::ScaleFitHelper scalefit_helper { UIF::HelperType::SCALE_FIT, helper_arr };
 			
 			std::vector<UIF::Helper*> invoker_helpers { &default_helper };
 

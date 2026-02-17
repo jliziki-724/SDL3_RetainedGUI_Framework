@@ -9,7 +9,7 @@ namespace UIF{
 		private:
 			std::unordered_map<std::string, uint32_t> redirect_lookup; /*Check if the image data has already been loaded based on filepath.*/
 									 		
-		std::vector<SDL_Texture*> textures { 0 }; //Insert one elemnt to reserve index 0 as sentinel.
+		std::vector<SDL_Texture*> textures { nullptr }; //Insert one elemnt to reserve index 0 as sentinel.
 
 		public:	
 		

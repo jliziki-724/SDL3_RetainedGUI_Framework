@@ -5,14 +5,16 @@ UIF::Window::Window(uint32_t cvec_id, const std::string& t, int w, int h, int fl
 	if(!window){
 		SDL_Log("Failed to create window. SDL error%s\n", SDL_GetError());
 	}
+	else{
+		this->id = SDL_GetWindowID(window);
+		this->Update_Dimensions();
+	}
 	renderer = SDL_CreateRenderer(window, NULL);
 	if(!renderer){
 		SDL_Log("Failed to create renderer. SDL error%s\n", SDL_GetError());
 	}
 	else{
-	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-	this->id = SDL_GetWindowID(window);
-	this->Update_Dimensions();
+		SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 	}
 }
 

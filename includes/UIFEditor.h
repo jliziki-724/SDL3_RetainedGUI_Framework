@@ -21,12 +21,12 @@ namespace UIFEditor{
 
 		//Assets Here.	
 		auto* f = UIF::Component::Create<UIF::Image>("Assets/582485.jpg", mgr["UIFEditor"])
-			->Add_Helper("scale_uniform", UIF::Invoker::RESIZE)
-			->Add_Helper("drag", UIF::Invoker::LONG_CLICK);
+			->Add_Helper(UIF::HelperType::SCALE_UNIFORM, UIF::Invoker::RESIZE)
+			->Add_Helper(UIF::HelperType::DRAG, UIF::Invoker::LONG_CLICK);
  
 
 		auto* g = UIF::Component::Clone<UIF::Image>(f)
-			->Add_Helper("scale_uniform", UIF::Invoker::CLICK);
+			->Add_Helper(UIF::HelperType::SCALE_UNIFORM, UIF::Invoker::CLICK);
 
 		f->Add_Child(g);
 

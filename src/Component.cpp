@@ -136,7 +136,7 @@ UIF::Component* UIF::Component::Mod_Src(float x, float y, float w, float h){
 	   y < 0 || y > tex_cache->Get_Texture(this)->h ||
 	   w < 1 || 
 	   h < 1 ){
-		return nullptr;
+		return this;
 	}
 	this->cfrect.src_frect.x = x;
 	this->cfrect.src_frect.y = y;
@@ -152,7 +152,7 @@ UIF::Component* UIF::Component::Mod_Dst(UIF::Window* window, float x, float y, f
 	   y < 0 || y > window->Get_Dimensions().h ||
 	   w < 1 || 
 	   h < 1 ){
-		return nullptr;
+		return this;
 	}
 	this->cfrect.dst_frect->x = x;
 	this->cfrect.dst_frect->y = y;
@@ -168,7 +168,7 @@ UIF::Component* UIF::Component::Mod_Color(int16_t r, int16_t g, int16_t b){
 	if( static_cast<float>(r + g + b) / 
 			static_cast<float>(std::numeric_limits<uint8_t>::max()) > 1 
 			|| (r * g * b) < 0){
-		return nullptr;
+		return this;
 	}
 	this->cfrect.RGBA.r = static_cast<uint8_t>(r);
 	this->cfrect.RGBA.g = static_cast<uint8_t>(g);
@@ -248,13 +248,13 @@ bool UIF::Component::State_Valid(){
 	return true;
 }
 
-UIF::Component* UIF::Component::Add_Helper(const std::string& helper, UIF::Invoker invoker){ 
-	UIF::Data::global_bus->Add_HelperLine(this, invoker, helper, UIF::Data::HelperOp::ADD_HELPER);
+UIF::Component* UIF::Component::Add_Helper(UIF::HelperType helper_type, UIF::Invoker invoker){ 
+	UIF::Data::global_bus->Add_HelperLine(this, invoker, helper_type, UIF::Data::HelperOp::ADD_HELPER);
 	return this;
 }
 
-UIF::Component* UIF::Component::Remove_Helper(const std::string& helper, UIF::Invoker invoker){
-	UIF::Data::global_bus->Add_HelperLine(this, invoker,  helper, UIF::Data::HelperOp::REMOVE_HELPER);
+UIF::Component* UIF::Component::Remove_Helper(UIF::HelperType helper_type, UIF::Invoker invoker){
+	UIF::Data::global_bus->Add_HelperLine(this, invoker,  helper_type, UIF::Data::HelperOp::REMOVE_HELPER);
 	return this;
 }
 
@@ -276,19 +276,19 @@ UIF::Component* UIF::Component::Remove_Child(UIF::Component* component){
 
 void UIF::TabBarContainer::Init(UIF::Window* window, float x, float y, float w, float h, int count){
 	static auto calc_space = [this, &x, w](){
-	int counter{};
+		int counter{};
 
-	if(!counter){
-		return x;
-	}
-	return (x + (++counter * w) + 5);
-	};
+		if(!counter){
+			return x;
+		}
+		return (x + (++counter * w) + 5);
+		};
 
-	for(int idx{}; idx < count; idx++){
-		 children.emplace_back(UIF::Component::Create<UIF::Tab>("", window, x, y, w, h));
-	}
+		for(int idx{}; idx < count; idx++){
+			 children.emplace_back(UIF::Component::Create<UIF::Tab>("", window, x, y, w, h));
+		}
 
-	for(auto* child : children){
-		child->Mod_Dst(window, calc_space(), y, w, h);
+		for(auto* child : children){
+			child->Mod_Dst(window, calc_space(), y, w, h);
 	}
 }

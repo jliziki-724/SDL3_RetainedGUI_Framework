@@ -1,5 +1,4 @@
 #include "TextureCache.h"
-#include "Window.h"
 #include "Component.h"
 
 UIF::TextureCache::~TextureCache(){

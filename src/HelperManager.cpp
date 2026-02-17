@@ -2,11 +2,11 @@
 #include "Component.h"
 
 UIF::HelperManager::HelperManager(){
-	helper_vec.reserve(UIF::Data::default_reserve);
+	component_helper_vec.reserve(UIF::Data::default_reserve);
 }
 
 void UIF::HelperManager::Invoke(UIF::Component* component, UIF::Window* window, UIF::Invoker invoker){
-	for(auto* helper : this->helper_vec[component->Get_HVec_ID()].arr_vec[static_cast<long unsigned int>(invoker)]){
+	for(auto* helper : this->component_helper_vec[component->Get_HVec_ID()].arr_vec[static_cast<long unsigned int>(invoker)]){
 	helper->Execute(component, window);
 	}
 	//DFS, start Execution on Leaf
@@ -21,20 +21,23 @@ void UIF::HelperManager::Update(){
 	this->notifications.Check(UIF::Data::DataLine::COMPONENT_LINE);
 	this->notifications.Check(UIF::Data::DataLine::HELPER_LINE);
 
+	//Allocate the Component an ArrOfVec - to which they are bound by HVec_ID which indexes component_helper_vec - containing a Vec of Helpers.
 	for(auto& component : this->notifications.Read_Comp()){
 		ArrOfVec arr_of_vec{};
 		for(int idx{}; idx < arr_of_vec.arr_vec.size() - 1; idx++){
 			arr_of_vec.arr_vec[idx] = invoker_helpers;
 		}
-		this->helper_vec.emplace_back(arr_of_vec);
-		component->Set_HVec_ID(this->helper_vec.size() - 1);
+		this->component_helper_vec.emplace_back(arr_of_vec);
+		component->Set_HVec_ID(static_cast<uint32_t>(this->component_helper_vec.size() - 1));
 	}
 	for(auto& pkg: notifications.Read_Helper()){
 		if(pkg.helper_op == UIF::Data::HelperOp::ADD_HELPER){
- 			this->helper_vec[pkg.component->Get_HVec_ID()].arr_vec[static_cast<long unsigned int>(pkg.invoker)].emplace_back(this->lookup_helpers[pkg.helper]);
+ 			this->component_helper_vec[pkg.component->Get_HVec_ID()].arr_vec[static_cast<int>(pkg.invoker)] //Get the Component's vector of Helpers.
+				.emplace_back(this->helper_arr[static_cast<int>(pkg.helper_type)]); //'pkg.invoker = Index for the vector containing the relevant behaviour
 		}
 		else{
-			UIF::ContainerTargetErase(this->helper_vec[pkg.component->Get_HVec_ID()].arr_vec[static_cast<long unsigned int>(pkg.invoker)], this->lookup_helpers[pkg.helper]);
+			UIF::ContainerTargetErase(this->component_helper_vec[pkg.component->Get_HVec_ID()] //Get the Component's vector of Helpers.
+					.arr_vec[static_cast<int>(pkg.invoker)], this->helper_arr[static_cast<int>(pkg.helper_type)]); //pkg.invoker = Index for the Vector containing the relevant behaviour.
 		}
 	}
 	this->notifications.Clear();

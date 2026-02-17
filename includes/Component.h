@@ -78,8 +78,8 @@ namespace UIF{
 			virtual void Update(UIF::Window* window) = 0; //Update Layout/Geometry
 		
 
-			UIF::Component* Add_Helper(const std::string& helper, UIF::Invoker invoker);
-			UIF::Component* Remove_Helper(const std::string& helper, UIF::Invoker invoker);
+			UIF::Component* Add_Helper(UIF::HelperType helper_type, UIF::Invoker invoker);
+			UIF::Component* Remove_Helper(UIF::HelperType helper_type, UIF::Invoker invoker);
 		        UIF::Component* Add_Child(UIF::Component* component);
 			UIF::Component* Remove_Child(UIF::Component* component);
 

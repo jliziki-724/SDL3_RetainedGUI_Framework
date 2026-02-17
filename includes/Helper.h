@@ -2,14 +2,33 @@
 #define HELPER_H
 
 #include "Component.h"
-#include <cmath>
-
+		 
 namespace UIF
 {
+	enum class HelperType{
+		LOAD,
+		PLAYBACK,
+		DEFAULT,
+		TEXT_INPUT,
+		TOOLTIP,
+		DRAG,
+
+		CARET_CURSOR,
+		MOVE_CURSOR,
+		SELECT_CURSOR,
+
+		SCALE_WIDTH,
+		SCALE_HEIGHT,
+		SCALE_UNIFORM,
+		SCALE_FIT,
+	
+		HELPER_COUNT
+	};
+
 	class Helper{
 		protected:
-		 	Helper(std::string_view helper, std::unordered_map<std::string_view, Helper*>& helpers){ 
-				helpers[helper] = this;
+		 	Helper(UIF::HelperType helper_type, std::array<UIF::Helper*, static_cast<long unsigned int>(UIF::HelperType::HELPER_COUNT)>& h ){ 
+				h[static_cast<int>(helper_type)] = this;
 			}
 		public:
        			virtual void Execute(UIF::Component* component, UIF::Window* window) = 0;	

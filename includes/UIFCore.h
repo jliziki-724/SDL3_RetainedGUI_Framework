@@ -130,6 +130,7 @@ namespace UIF{
 
 	//Auxiliary types	
 	enum class Invoker;
+	enum class HelperType;
 	struct Dimensions;
 	struct ColoredFRect;
 	struct ArrOfVec;
