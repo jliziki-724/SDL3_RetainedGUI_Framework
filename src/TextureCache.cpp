@@ -14,8 +14,6 @@ SDL_Texture* UIF::TextureCache::Get_Texture(UIF::Component* component){
 
 bool UIF::TextureCache::Add_Texture(const std::string& filepath, UIF::Window* window, UIF::Component* component){
 	//Texture hasn't already been loaded.
-	//
-
 	if(!this->redirect_lookup[filepath]){
 		SDL_Surface* temp_surface = IMG_Load(filepath.c_str());
 		if(!temp_surface){

@@ -6,10 +6,9 @@ UIF::HelperManager::HelperManager(){
 }
 
 void UIF::HelperManager::Invoke(UIF::Component* component, UIF::Window* window, UIF::Invoker invoker){
-	for(auto* helper : this->component_helper_vec[component->Get_HVec_ID()].arr_vec[static_cast<long unsigned int>(invoker)]){
-	helper->Execute(component, window);
+	for(auto* helper : this->component_helper_vec[component->Get_HVec_ID()].arr_vec[static_cast<int>(invoker)]){
+		helper->Execute(component, window);
 	}
-	//DFS, start Execution on Leaf
 	if(invoker == UIF::Invoker::RESIZE){
 		for(auto* child : component->Get_Children()){
 			Invoke(child, window, invoker);

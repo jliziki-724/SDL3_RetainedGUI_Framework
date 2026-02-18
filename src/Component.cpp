@@ -70,7 +70,7 @@ void UIF::Component::Render(UIF::Window* window, UIF::Component* component){
 		return true;
 	};
 
-	static auto render_cfrect = [cached, cache_render](SDL_Color& last_color, UIF::Component* component){
+	auto render_cfrect = [cached, cache_render, component](SDL_Color& last_color){
 		if(!cached(last_color, component->cfrect.RGBA)){
 			SDL_SetRenderDrawColor(cache_render, component->cfrect.RGBA.r, component->cfrect.RGBA.g, component->cfrect.RGBA.b, component->cfrect.RGBA.a);
 		}
@@ -79,14 +79,14 @@ void UIF::Component::Render(UIF::Window* window, UIF::Component* component){
 	};
 
 	if(component->TVec_ID == UIF::TextureCache::NO_TEXTURE){
-		render_cfrect(last_color, component);
+		render_cfrect(last_color);
 	}
 	else{
 		SDL_RenderTexture(cache_render, tex_cache->Get_Texture(component), &component->cfrect.src_frect, component->cfrect.dst_frect);
 	}
 	for(auto* child : component->children){	
 		if(child->TVec_ID == UIF::TextureCache::NO_TEXTURE){
-			render_cfrect(last_color, child);
+			render_cfrect(last_color);
 			
 		}
 		else{
@@ -98,7 +98,7 @@ void UIF::Component::Render(UIF::Window* window, UIF::Component* component){
 
 //Depth First Search. If Component hit, check children... And so forth for all hit components... then return the hit child with no children.
 UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
-	static auto hit_test = [](UIF::Component* component){
+	auto hit_test = [](UIF::Component* component){
  		float m_x{};
   		float m_y{};
 		SDL_GetMouseState(&m_x, &m_y);
@@ -111,10 +111,11 @@ UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
 		return false;
 	};
 
-	for(auto* child : component->children){
-		if(child->Is_Active()){
-			if(hit_test(child)){
-				return Query_Hit(child);
+        //Following render order, will test top-most elements first.
+	for(int idx{ component->children.size() - 1 }; idx >= 0; idx--){
+		if(component->children[idx]->Is_Active()){
+			if(hit_test(component->children[idx])){
+				return Query_Hit(component->children[idx]);
 			}
 		}
 	}
@@ -239,12 +240,15 @@ UIF::Component* UIF::Component::Remove_Helper(UIF::HelperType helper_type, UIF::
 	return this;
 }
 
+//Returns pointer to child for more chaining, i.e. Child with Properties. 
+//Parent->Add_Child(x)->Add_Helper(); <- Child or Parent Modified? Nuanced either way given the presentation.
 UIF::Component* UIF::Component::Add_Child(UIF::Component* component){
 	component->parent = this;
 	this->children.emplace_back(component);
 	return component;
 }
 
+//Returns pointer to child.
 //Moving child elsewhere or discarding...
 UIF::Component* UIF::Component::Remove_Child(UIF::Component* component){
 	component->parent = nullptr;

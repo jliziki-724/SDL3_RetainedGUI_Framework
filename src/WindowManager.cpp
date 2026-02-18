@@ -167,7 +167,7 @@ void UIF::WindowManager::Component_Event(UIF::Component* component, UIF::Invoker
 		return;
 	 }
 
-	auto hit_test = [component](){
+	auto hit_test = [](UIF::Component* component){
    		const ColoredFRect temp = component->Get_CFRect();
   		float m_x{};
   		float m_y {};
@@ -182,7 +182,7 @@ void UIF::WindowManager::Component_Event(UIF::Component* component, UIF::Invoker
 		return false;	
   	};
 
-	if(hit_test()){
+	if(hit_test(component)){
 		this->helper_mgr.Invoke(UIF::Component::Query_Hit(component),focus_window, invoker);
 	}
 }
@@ -191,7 +191,7 @@ void UIF::WindowManager::Run(){
 	uint64_t start_ticks{};
 	uint64_t end_ticks{};	
 
-	 static auto cache_window = [this](){
+	 auto cache_window = [this](){
 	 	auto cache_FPS { focus_window->Get_FPS() };
 	 	auto* cache_focus { focus_window };
 
