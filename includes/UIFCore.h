@@ -133,7 +133,6 @@ namespace UIF{
 	enum class HelperType;
 	struct Dimensions;
 	struct ColoredFRect;
-	struct ArrOfVec;
 
 	namespace Data{
 		enum class Recipient;

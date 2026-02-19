@@ -26,14 +26,11 @@ UIF::Component::Component(const std::string& filepath, UIF::Window* window, floa
 			(static_cast<float>(window->Get_Dimensions().w) * static_cast<float>(window->Get_Dimensions().h));
 	}
 	this->children.reserve(UIF::Data::default_reserve);
+	UIF::Data::global_bus->Add_ComponentLine(this); // <- Put in Bus to be allocated invokers and helpers.	
 }
 
 UIF::Component::Component(UIF::Component* component){
 	this->cfrect = component->cfrect; 
-	this->cfrect.dst_frect = new SDL_FRect{ component->cfrect.dst_frect->x,
-						component->cfrect.dst_frect->y,
-						component->cfrect.dst_frect->w,
-						component->cfrect.dst_frect->h };
 
 	this->parent = component->parent; 
 	this->children = component->children;
@@ -55,46 +52,6 @@ void UIF::Component::Delete(UIF::Component* component){
 	delete component;
 }
 
-//Another DFS... Render Component(Parent) first, then render the child, then Render the child's children... And so forth.
-void UIF::Component::Render(UIF::Window* window, UIF::Component* component){
-	SDL_Renderer* const cache_render { window->Get_Renderer() }; //Repeated calls to get the renderer per cycle are unideal.	
-	auto cached = [](SDL_Color& last_color, const SDL_Color& RGBA){	//Don't set the draw color if it hasn't changed.
-		if(last_color.r != RGBA.r &&
-		   last_color.b != RGBA.b &&
-		   last_color.g != RGBA.g &&
-		   last_color.a != RGBA.a){
-			last_color = RGBA;
-			return false;
-		   }
-
-		return true;
-	};
-
-	auto render_cfrect = [cached, cache_render, component](SDL_Color& last_color){
-		if(!cached(last_color, component->cfrect.RGBA)){
-			SDL_SetRenderDrawColor(cache_render, component->cfrect.RGBA.r, component->cfrect.RGBA.g, component->cfrect.RGBA.b, component->cfrect.RGBA.a);
-		}
-		SDL_RenderFillRect(cache_render, 
-				component->cfrect.dst_frect);
-	};
-
-	if(component->TVec_ID == UIF::TextureCache::NO_TEXTURE){
-		render_cfrect(last_color);
-	}
-	else{
-		SDL_RenderTexture(cache_render, tex_cache->Get_Texture(component), &component->cfrect.src_frect, component->cfrect.dst_frect);
-	}
-	for(auto* child : component->children){	
-		if(child->TVec_ID == UIF::TextureCache::NO_TEXTURE){
-			render_cfrect(last_color);
-			
-		}
-		else{
-			SDL_RenderTexture(cache_render, tex_cache->Get_Texture(child), &child->cfrect.src_frect, child->cfrect.dst_frect); 
-		}
-		Render(window, child);
-	}
-}
 
 //Depth First Search. If Component hit, check children... And so forth for all hit components... then return the hit child with no children.
 UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
@@ -122,8 +79,6 @@ UIF::Component* UIF::Component::Query_Hit(UIF::Component* component){
 
 	return component;
 }
-
-
 
 UIF::Component* UIF::Component::Mod_Src(float x, float y, float w, float h){
 	if(x < 0 || x > tex_cache->Get_Texture(this)->w ||
@@ -198,6 +153,14 @@ void UIF::Component::Set_Active(bool new_active){
 	this->is_active = new_active;
 }
 
+void UIF::Component::Set_Draw(bool new_need_draw){
+	this->need_draw = new_need_draw;
+}
+
+bool UIF::Component::Need_Draw(){
+	return this->need_draw;
+}
+
 bool UIF::Component::Is_Active(){
 	return this->is_active;
 }
@@ -259,17 +222,26 @@ UIF::Component* UIF::Component::Remove_Child(UIF::Component* component){
 
 //DERVIED CLASS - DEFINITIONS
 
-void UIF::TabBarContainer::Init(UIF::Window* window, float x, float y, float w, float h, int count){
-	static auto calc_space = [this, &x, w](){
-		int counter{};
+void UIF::Workspace::Set_Children_Draggable(UIF::Component* component){
+	for(auto* child : component->Get_Children()){
+		Set_Children_Draggable(child);
+		child->Add_Helper(UIF::HelperType::DRAG, UIF::Invoker::CLICK);
+	}
+}
 
+void UIF::TabBarContainer::Init(UIF::Window* window, float x, float y, float w, float h, int tab_no){
+	this->need_draw = false;
+
+	int counter{};
+	auto calc_space = [&counter, x, w](){
 		if(!counter){
+			++counter;
 			return x;
 		}
-		return (x + (++counter * w) + 5);
-		};
+			return (x + (++counter * w) + 5);
+	};
 
-		for(int idx{}; idx < count; idx++){
+		for(int idx{}; idx < tab_no; idx++){
 			 children.emplace_back(UIF::Component::Create<UIF::Tab>("", window, x, y, w, h));
 		}
 
@@ -277,3 +249,4 @@ void UIF::TabBarContainer::Init(UIF::Window* window, float x, float y, float w, 
 			child->Mod_Dst(window, calc_space(), y, w, h);
 	}
 }
+

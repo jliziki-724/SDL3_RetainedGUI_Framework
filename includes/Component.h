@@ -11,13 +11,11 @@ namespace UIF{
 	struct ColoredFRect{
 		SDL_FRect* dst_frect { new SDL_FRect{} };
 		SDL_FRect src_frect {};
-		SDL_Color RGBA{ 0, 0, 0, SDL_ALPHA_OPAQUE };
+		SDL_Color RGBA{ 255, 255, 255, SDL_ALPHA_OPAQUE };
 	};
 
-	//Consider Naming Components?
 	class Component{
 		protected:
-			inline static SDL_Color last_color{}; // <- Lazy cache. Not Thread Safe. However, rendering is single threaded.
 			inline static uint32_t Component_ID{}; // To use in error logs... TypeName + ID <- Remember to actually add this.
 			uint32_t ID{ Component_ID++ };
 
@@ -26,6 +24,8 @@ namespace UIF{
 			UIF::Component* parent{ nullptr };
 			std::vector<Component*> children;
 
+			std::string name{};
+
 			//Texture Vector ID
 			uint32_t TVec_ID{};
 			//Helpers Vector ID
@@ -33,8 +33,11 @@ namespace UIF{
 
 	        	float aspect{};
 			float win_ratio{};
-		
+	
+			//Activity state... Should component respond to input? Animate?
 			bool is_active{ true };
+			//Draw state... Should component be drawn?
+			bool need_draw{ true };
 
 			Component(Component* component);
 			Component(const std::string& filepath, UIF::Window* window, float x, float y, float w, float h); //Image based Components
@@ -47,29 +50,29 @@ namespace UIF{
 			template <typename T>
 				static T* Create(const std::string& filepath, UIF::Window* window, float x = 0.0f, float y = 0.0f, 
 						 float w = 1.0f, float h = 1.0f){
-					T* component = new T(filepath, window, x, y, w, h);
-					UIF::Data::global_bus->Add_ComponentLine(component); // <- Put in Bus to be allocated invokers and helpers.	
+					T* component = new T(filepath, window, x, y, w, h);	
 					return component;
 				}
 
 			//Clone usable in next frame... 
 			template<typename T>
 				static T* Clone(UIF::Component* component){
-					T* clone = new T(component); 		
+					T* clone = new T(component); 
+
+					clone->cfrect.dst_frect = new SDL_FRect{ component->cfrect.dst_frect->x,
+						component->cfrect.dst_frect->y,
+						component->cfrect.dst_frect->w,
+						component->cfrect.dst_frect->h };
+
 					//Constructs a deep copy of every copied child resource pointer.
 					for(int idx{}; idx < clone->children.size(); idx++){
 						clone->children[idx] = Clone<T>(clone->children[idx]);
 					}	
-
 					return clone;
 				}
 	
-			static void Render(UIF::Window* window, UIF::Component* component);
 			static void Delete(UIF::Component* component);
 			static UIF::Component* Query_Hit(UIF::Component* component);
-
-			virtual void Update(UIF::Window* window) = 0; //Update Layout/Geometry
-		
 
 			UIF::Component* Add_Helper(UIF::HelperType helper_type, UIF::Invoker invoker);
 			UIF::Component* Remove_Helper(UIF::HelperType helper_type, UIF::Invoker invoker);
@@ -97,34 +100,43 @@ namespace UIF{
 
 			void Set_Active(bool new_active);
 			bool Is_Active();
+			void Set_Draw(bool new_need_draw);
+			bool Need_Draw();
 
 			const std::vector<UIF::Component*>& Get_Children();
 		};
 
+		class Workspace : public Component{
+			private:
+				using Component::Component;
+				std::vector<UIF::Anchor*> anchors;
+			public:
+				void Set_Children_Draggable(UIF::Component* component);
+				void Snap_Child_Anchor(UIF::Component* component, UIF::Anchor* Anchor); //Run on separate thread.
+				void Resize_Component_Corner_Drag(UIF::Component* component); //Run on separate thread
+				void Resize_Component_Side_Drag(UIF::Component* component); //Run on separate thread.
+		};
+
+		class Anchor : public Component{
+			private:
+				using Component::Component;	
+
+			public:
+				void Init(SDL_Color color, int w, int h);
+
+
+
+
+		};
 	        class Image : public Component{
 			private:
 				using Component::Component;
 			public:
-				virtual void Update(UIF::Window* window) override{
-				}
+
 		};
 
 		
-		class Anchor : public Component{
-			private:
-				using Component::Component;
-				bool snapped_to{}; // <- Occupied by a Component
 
-			public:
-				bool Snapped_To(){
-					return snapped_to;
-				}
-
-				//Check for Occlusion... etc.
-				virtual void Update(UIF::Window* window) override{
-				}
-
-		};
 
 
 		class CheckBox : public Component{
@@ -132,8 +144,7 @@ namespace UIF{
 				using Component::Component;
 
 			public:
-				virtual void Update(UIF::Window* window) override{
-				}
+				
 		};
 
 		class DropMenu : public Component{
@@ -152,7 +163,7 @@ namespace UIF{
 				float progress{};
 
 			public:
-				virtual void Update(UIF::Window* window) override{}
+				
 
 		};
 
@@ -162,8 +173,7 @@ namespace UIF{
 				using Component::Component;
 			
 		  	public:
-				virtual void Update(UIF::Window* window) override{
-				}
+		
 			
 		};
 
@@ -176,8 +186,8 @@ namespace UIF{
 				using Component::Component;
 
 			public:
-				virtual void Update(UIF::Window* window) override{
-				}
+				void Init(std::string_view name);
+
 		};
 
 		class SideBar : public Component{
@@ -185,18 +195,16 @@ namespace UIF{
 				using Component::Component;
 
 			public:
-				virtual void Update(UIF::Window* window) override{}
+
 		
 		};
 
 		class Tab : public Component{
 			private:
 				using Component::Component;
+			public:	
+				void Init(std::string_view name);
 
-			public:
-			
-				virtual void Update(UIF::Window* window) override{
-				}
 
 	
 		};
@@ -212,13 +220,9 @@ namespace UIF{
 				float tabs_y{}; 
 
 			public:
-				void Init(UIF::Window* window, float x, float y, float w, float h, int count);
+				void Init(UIF::Window* window, float x, float y, float w, float h, int tab_no);
+				void Add_Tab();
 
-				void Add_Tab(){
-				}
-	
-				virtual void Update(UIF::Window* window) override{
-				}	
 
 		};
 

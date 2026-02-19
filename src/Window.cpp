@@ -39,7 +39,7 @@ SDL_Window* UIF::Window::Get_Window(){
     return this->window;
 }
 
-int UIF::Window::Get_FPS(){
+int UIF::Window::Get_Frame_Rate(){
 	return this->frame_rate;
 }
 
@@ -71,12 +71,12 @@ void UIF::Window::Set_Active(bool new_active){
 	this->is_active = new_active;
 }
 
+void UIF::Window::Set_Frame_Rate(int new_frame_rate){
+	this->frame_rate = new_frame_rate;
+}
+	
 void UIF::Window::Set_Priority(uint64_t timestamp){
 	this->priority = timestamp;
-}
-
-void UIF::Window::Set_Framerate(int new_framerate){
-	this->frame_rate = new_framerate;
 }
 
 void UIF::Window::Update_Dimensions(){

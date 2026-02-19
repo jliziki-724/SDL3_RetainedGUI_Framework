@@ -23,13 +23,14 @@ namespace UIF{
 		INVOKER_COUNT
 	};  
 
-	struct ArrOfVec{
+	//Abstraction specifically for this class, for readability.
+	struct ArrOfHVec{
 		std::array<std::vector<UIF::Helper*>, static_cast<long unsigned int>(UIF::Invoker::INVOKER_COUNT)> arr_vec;
 	};
 
 	class HelperManager{
 		private: 
-			std::vector<ArrOfVec> component_helper_vec;	
+			std::vector<ArrOfHVec> component_helper_vec;	
 			//Helper Lookup/List of Helpers
 			std::array<UIF::Helper*, static_cast<long unsigned int>(UIF::HelperType::HELPER_COUNT)> helper_arr;
 			
@@ -60,7 +61,11 @@ namespace UIF{
 			UIF::ScaleByWidthHelper scalebywidth_helper { UIF::HelperType::SCALE_WIDTH, helper_arr };
 			UIF::ScaleByHeightHelper scalebyheight_helper { UIF::HelperType::SCALE_HEIGHT, helper_arr };
 			UIF::ScaleUniformHelper scaleuniform_helper { UIF::HelperType::SCALE_UNIFORM, helper_arr };
+
+			//Fit Scales
 			UIF::ScaleFitHelper scalefit_helper { UIF::HelperType::SCALE_FIT, helper_arr };
+			UIF::ScaleFitHeightHelper scalefitheight_helper { UIF::HelperType::SCALE_FIT_HEIGHT, helper_arr };
+			UIF::ScaleFitWidthHelper scalefitwidth_helper { UIF::HelperType::SCALE_FIT_WIDTH, helper_arr };
 			
 			std::vector<UIF::Helper*> invoker_helpers { &default_helper };
 

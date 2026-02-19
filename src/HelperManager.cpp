@@ -16,17 +16,18 @@ void UIF::HelperManager::Invoke(UIF::Component* component, UIF::Window* window, 
 	}
 }
 
+//Eye bleach.
 void UIF::HelperManager::Update(){
 	this->notifications.Check(UIF::Data::DataLine::COMPONENT_LINE);
 	this->notifications.Check(UIF::Data::DataLine::HELPER_LINE);
 
 	//Allocate the Component an ArrOfVec - to which they are bound by HVec_ID which indexes component_helper_vec - containing a Vec of Helpers.
 	for(auto& component : this->notifications.Read_Comp()){
-		ArrOfVec arr_of_vec{};
-		for(int idx{}; idx < arr_of_vec.arr_vec.size() - 1; idx++){
-			arr_of_vec.arr_vec[idx] = invoker_helpers;
+		ArrOfHVec arr_of_hvec{};
+		for(int idx{}; idx < arr_of_hvec.arr_vec.size() - 1; idx++){
+			arr_of_hvec.arr_vec[idx] = invoker_helpers;
 		}
-		this->component_helper_vec.emplace_back(arr_of_vec);
+		this->component_helper_vec.emplace_back(arr_of_hvec);
 		component->Set_HVec_ID(static_cast<uint32_t>(this->component_helper_vec.size() - 1));
 	}
 	for(auto& pkg: notifications.Read_Helper()){

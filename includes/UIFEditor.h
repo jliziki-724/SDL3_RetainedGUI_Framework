@@ -20,21 +20,13 @@ namespace UIFEditor{
 		mgr.Create_Window("UIFEditor", 1280, 720);	
 
 		//Assets Here.	
-		auto* f = UIF::Component::Create<UIF::Image>("Assets/582485.jpg", mgr["UIFEditor"])
-			->Add_Helper(UIF::HelperType::SCALE_UNIFORM, UIF::Invoker::RESIZE)
-			->Add_Helper(UIF::HelperType::DRAG, UIF::Invoker::LONG_CLICK);
+		auto* workspace{ UIF::Component::Create<UIF::Workspace>("", mgr["UIFEditor"]) };
+		workspace->Add_Child( UIF::Component::Create<UIF::TabBarContainer>("", mgr["UIFEditor"], 0, 0, 1, 30)
+				->Add_Helper(UIF::HelperType::SCALE_FIT_WIDTH, UIF::Invoker::RESIZE) );
 
 
-		for(int x{}; x < 5; x++){
-			f->Add_Child(UIF::Component::Create<UIF::Image>("Assets/582485.jpg", mgr["UIFEditor"])->
-					Add_Helper(UIF::HelperType::SCALE_UNIFORM, UIF::Invoker::CLICK));
 
-         	}
-
-
-		mgr.Add_Component(f, mgr["UIFEditor"]);
-	
-
+		mgr.Add_Component(workspace, mgr["UIFEditor"]);
 		mgr.Run();
 
 		delete UIF::Data::global_bus;

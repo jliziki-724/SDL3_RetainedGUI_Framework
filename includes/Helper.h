@@ -21,6 +21,8 @@ namespace UIF
 		SCALE_HEIGHT,
 		SCALE_UNIFORM,
 		SCALE_FIT,
+		SCALE_FIT_WIDTH,
+		SCALE_FIT_HEIGHT,
 	
 		HELPER_COUNT
 	};
@@ -70,6 +72,27 @@ namespace UIF
 					static_cast<float>(window->Get_Dimensions().w),
 					static_cast<float>(window->Get_Dimensions().h));
 			}
+	};
+	
+	class ScaleFitWidthHelper : public Helper{
+		public:
+			using Helper::Helper;
+			virtual void Execute(UIF::Component* component, UIF::Window* window) override{
+				component->Mod_Dst(window, component->Get_CFRect().dst_frect->x, component->Get_CFRect().dst_frect->y,
+						static_cast<float>(window->Get_Dimensions().w),
+						component->Get_CFRect().dst_frect->h);
+			}
+	};
+
+	class ScaleFitHeightHelper : public Helper{
+		public:
+			using Helper::Helper;
+			virtual void Execute(UIF::Component* component, UIF::Window* window) override{
+				component->Mod_Dst(window, component->Get_CFRect().dst_frect->x, component->Get_CFRect().dst_frect->y,
+						component->Get_CFRect().dst_frect->w,
+						static_cast<float>(window->Get_Dimensions().h));
+			}
+
 	};
 
 	class ScaleUniformHelper : public Helper{

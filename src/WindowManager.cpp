@@ -55,15 +55,12 @@ void UIF::WindowManager::Delete_Window(){
 
 void UIF::WindowManager::Update(){
 	this->helper_mgr.Update();
+	this->renderer.Update(this->windows);
 }
 
 
 void UIF::WindowManager::Render(){
-	for(auto* window : this->windows){
-		if(window->Is_Active()){
-			this->renderer.Render_Active(window);
-		}
-	}
+	this->renderer.Render_Present(this->windows);
 }
 
 void UIF::WindowManager::Dispatch(){
@@ -81,6 +78,11 @@ void UIF::WindowManager::Dispatch(){
 
 			case SDL_EVENT_MOUSE_MOTION:
 				Query_ID(this->event.window.windowID); 
+				break;
+
+			case SDL_EVENT_WINDOW_OCCLUDED:
+				//Query_ID(this->event.window.windowID);
+				//Throttle_Frame_Rate(this->focus_window); <-Revisit
 				break;
 
 			case SDL_EVENT_WINDOW_RESIZED:
@@ -187,17 +189,21 @@ void UIF::WindowManager::Component_Event(UIF::Component* component, UIF::Invoker
 	}
 }
 
+void UIF::WindowManager::Throttle_Frame_Rate(UIF::Window* window){
+	window->Set_Frame_Rate(30);
+}
+
 void UIF::WindowManager::Run(){
 	uint64_t start_ticks{};
 	uint64_t end_ticks{};	
 
 	 auto cache_window = [this](){
-	 	auto cache_FPS { focus_window->Get_FPS() };
+	 	auto cache_FPS { focus_window->Get_Frame_Rate() };
 	 	auto* cache_focus { focus_window };
 
 		if(cache_focus != this->focus_window){
 			cache_focus = this->focus_window;
-			cache_FPS = this->focus_window->Get_FPS();
+			cache_FPS = this->focus_window->Get_Frame_Rate();
 			return cache_FPS;
 		}
 		return cache_FPS;

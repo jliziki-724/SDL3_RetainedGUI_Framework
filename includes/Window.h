@@ -30,7 +30,7 @@ namespace UIF{
 
 		void Set_Priority(uint64_t t_stamp);
 		void Set_Active(bool new_active);
-		void Set_Framerate(int new_Framerate);
+		void Set_Frame_Rate(int new_frame_rate);
 		void Update_Dimensions();
 
 		Window(uint32_t cvec_id, std::string_view t, int w, int h, int flag);
@@ -44,7 +44,7 @@ namespace UIF{
 		SDL_Renderer* Get_Renderer();
 		SDL_WindowID Get_ID();
 
-		int Get_FPS();
+		int Get_Frame_Rate();
 		bool Is_Active();
 
 		uint32_t Get_CVec_ID();
